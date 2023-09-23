@@ -39,3 +39,12 @@ content-type: application/json
     "name": "Arto Hellas2",
     "number": "12345"
 }
+
+###
+POST https://render-part3-8e7q.onrender.com/api/persons/
+content-type: application/json
+
+{
+    "name": "Arto Hellas2",
+    "number": "12345"
+}
