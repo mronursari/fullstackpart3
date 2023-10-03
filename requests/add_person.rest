@@ -48,3 +48,6 @@ content-type: application/json
     "name": "Arto Hellas2",
     "number": "12345"
 }
+
+###
+GET http://localhost:3001/api/persons/651b040d180d5758402827a0
