@@ -6,44 +6,21 @@ const Person = require('./models/person')
 
 const app = express()
 
-morgan.token('additionalInfo', function(req, res){
-    if(req.method === 'POST')
-    {
-        return(JSON.stringify(req.body))
-    }
-    else
-    {
-        return(' ')
-    }
+morgan.token('additionalInfo', function(req){
+  if(req.method === 'POST')
+  {
+    return(JSON.stringify(req.body))
+  }
+  else
+  {
+    return(' ')
+  }
 })
 
 app.use(express.json())
 app.use(morgan(':method :url :status :res[content-length] - :response-time ms :additionalInfo'))
 app.use(cors())
 app.use(express.static('dist'))
-
-let persons = [
-    {
-        "id": 1,
-        "name": "Arto Hellas",
-        "number": "040-123456"
-      },
-      {
-        "id": 2,
-        "name": "Ada Lovelace",
-        "number": "39-44-5323523"
-      },
-      {
-        "id": 3,
-        "name": "Dan Abramov",
-        "number": "12-43-234345"
-      },
-      {
-        "id": 4,
-        "name": "Mary Poppendieck",
-        "number": "39-23-6423122"
-      }
-]
 
 app.get('/api/persons', (request, response) => {
   Person.find({}).then(persons => {
@@ -54,34 +31,34 @@ app.get('/api/persons', (request, response) => {
 app.get('/api/persons/:id', (request, response, next) => {
 
   Person.findById(request.params.id)
-  .then(person => {
-
-    if (person) {
-      response.json(person)
-    } else {
-      response.status(404).end()
-    }
-  })
-  .catch(error => next(error))
-})
-
-app.post('/api/persons', (request, response, next) => {
-
-    const reqBody = request.body
-
-    const person = new Person({name: reqBody.name,
-                    number: reqBody.number})
-
-    person.save().then(savedNote => {
-                      response.json(savedNote)
+    .then(person => {
+      if (person) {
+        response.json(person)
+      }
+      else {
+        response.status(404).end()
+      }
     })
     .catch(error => next(error))
 })
 
-app.delete('/api/persons/:id', (request, response) => {
+app.post('/api/persons', (request, response, next) => {
 
-    Person.findByIdAndRemove(request.params.id)
-    .then(result => {
+  const reqBody = request.body
+
+  const person = new Person({ name: reqBody.name,
+    number: reqBody.number })
+
+  person.save().then(savedNote => {
+    response.json(savedNote)
+  })
+    .catch(error => next(error))
+})
+
+app.delete('/api/persons/:id', (request, response, next) => {
+
+  Person.findByIdAndRemove(request.params.id)
+    .then( () => {
       response.status(204).end()
     })
     .catch(error => next(error))
@@ -101,16 +78,16 @@ app.put('/api/persons/:id', (request, response, next) => {
 
   if(!reqBody.name)
   {
-      return response.status(400).json({
-          error: 'name missing'
-        })
+    return response.status(400).json({
+      error: 'name missing'
+    })
   }
 
   if(!reqBody.number)
   {
-      return response.status(400).json({
-          error: 'number missing'
-        })
+    return response.status(400).json({
+      error: 'number missing'
+    })
   }
 
   const person = {
@@ -119,8 +96,8 @@ app.put('/api/persons/:id', (request, response, next) => {
   }
 
   Person.findByIdAndUpdate(request.params.id,
-     person,
-      { new: true, runValidators: true, context: 'query' })
+    person,
+    { new: true, runValidators: true, context: 'query' })
     .then(updatedPerson => {
       response.json(updatedPerson)
     })

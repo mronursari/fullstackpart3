@@ -7,37 +7,36 @@ const url = process.env.MONGODB_URI
 console.log('connecting to', url)
 
 mongoose.connect(url)
-.then(result => {
+  .then(() => {
     console.log('connected to MongoDB')
-})
-.catch((error) => {
+  })
+  .catch((error) => {
     console.log('error connecting to MongoDB:', error.message)
-})
+  })
 
 function validator (val) {
   if(val.length < 8)
   {
-    console.log("Custom validator failed")
-    return false;
+    console.log('Custom validator failed')
+    return false
   }
   else
   {
-    return /^\d{2,3}-?\d{5,}$/.test(val);
+    return /^\d{2,3}-?\d{5,}$/.test(val)
   }
 }
 
-
 const personSchema = new mongoose.Schema({
-    name: {
-      type: String,
-      minLength: 3,
-      required: true
-    },
-    number: {
-      type: String,
-      validate: validator,
-      required: true
-    },
+  name: {
+    type: String,
+    minLength: 3,
+    required: true
+  },
+  number: {
+    type: String,
+    validate: validator,
+    required: true
+  },
 })
 
 personSchema.set('toJSON', {
