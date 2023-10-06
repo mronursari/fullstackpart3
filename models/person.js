@@ -14,6 +14,19 @@ mongoose.connect(url)
     console.log('error connecting to MongoDB:', error.message)
 })
 
+function validator (val) {
+  if(val.length < 8)
+  {
+    console.log("Custom validator failed")
+    return false;
+  }
+  else
+  {
+    return /^\d{2,3}-?\d{5,}$/.test(val);
+  }
+}
+
+
 const personSchema = new mongoose.Schema({
     name: {
       type: String,
@@ -22,7 +35,7 @@ const personSchema = new mongoose.Schema({
     },
     number: {
       type: String,
-      minLength: 8,
+      validate: validator,
       required: true
     },
 })
